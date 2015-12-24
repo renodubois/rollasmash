@@ -47,7 +47,7 @@
           <div class="text-uppercase">
             <ul class="nav navbar-nav navbar-right">
               <li><a href="#">Sign Up</a></li>
-              <li class="active"><a href="#"><span class="glyphicon glyphicon-user"></span> Log In</a></li>
+              <li class="active"><a href="login.php"><span class="glyphicon glyphicon-user"></span> Log In</a></li>
             </ul>
           </div>
           <form class="navbar-form navbar-right" role="search">
@@ -79,6 +79,23 @@
     <button type="submit" class="btn btn-default">Log In</button>
   </div>
 </div>
+
+
+<<?php 
+
+  $message = " ";
+  if(count($_POST) > 0) {
+    $conn = mysql_connect("localhost","root","");
+    mysql_select_db("users",$conn);
+    $result = mysql_query("SELECT * FROM details WHERE userName='" . $_POST["userName"] . "' and password = '". $_POST["password"]."'");
+    $count = mysql_num_rows($result);
+    if($count == 0) {
+      $message = "Invalid Username or Password!";
+    } else {
+      $message = "You are successfully authenticated!";
+    }
+  }
+ ?>
 
 
 
