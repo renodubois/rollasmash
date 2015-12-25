@@ -89,10 +89,24 @@ FB::log('Log message');
 FB::info('Info message');
 FB::warn('Warn message');
 FB::error('Error message');
+ini_set('display_errors', 'On');
+
+  $servername = "localhost";
+  $username = "root";
+  $password = "}R,;#,1d";
+  
+  $conn = mysqli($servername, $username, $password);
+
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+echo "Connected successfully";
 
   $message = " ";
+/*
   if(count($_POST) > 0) {
-    $conn = mysql_connect("localhost","root","");
+    $conn = mysqli($servername, $username, $password);
     mysql_select_db("users",$conn);
     $result = mysql_query("SELECT * FROM details WHERE userName='" . $_POST["userName"] . "' and password = SHA1('". $_POST["password"]."')");
     $count = mysql_num_rows($result);
@@ -102,9 +116,10 @@ FB::error('Error message');
       $message = "You are successfully authenticated!";
     }
   }
- ?>
 
+*/
 
+?>
 
 
  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
