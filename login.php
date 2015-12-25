@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <!-- Made by Reno DuBois, 2015. Using Bootstrap and Cosmo theme from bootswatch.com. -->
 <!-- Source can be accessed at github.com/renodubois -->
 <html lang="en">
@@ -66,11 +66,12 @@
 <div class="login-block">
   <h2 class="login-block">Log in</h2>
   </br>
+  <form action = "validate.php"  method = "post">
   <div class="form-group">
-    <input type="text" class="form-control" id="username" placeholder="Username">
+    <input type="text" class="form-control" name="username" placeholder="Username">
   </div>
   <div class="form-group">
-    <input type="password" class="form-control" id="password" placeholder="Password">
+    <input type="password" class="form-control" name="password" placeholder="Password">
   </div>
   <div class="checkbox">
     <label><input type="checkbox">Keep me logged in!</label>
@@ -78,48 +79,8 @@
   <div class="form-group">
     <button type="submit" class="btn btn-default">Log In</button>
   </div>
+  </form>
 </div>
-
-
-<?php 
-
-  require 'FirePHPCore/fb.php';
-  
-FB::log('Log message');
-FB::info('Info message');
-FB::warn('Warn message');
-FB::error('Error message');
-ini_set('display_errors', 'On');
-
-  $servername = "localhost";
-  $username = "root";
-  $password = "}R,;#,1d";
-  
-  $conn = mysqli($servername, $username, $password);
-
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-echo "Connected successfully";
-
-  $message = " ";
-/*
-  if(count($_POST) > 0) {
-    $conn = mysqli($servername, $username, $password);
-    mysql_select_db("users",$conn);
-    $result = mysql_query("SELECT * FROM details WHERE userName='" . $_POST["userName"] . "' and password = SHA1('". $_POST["password"]."')");
-    $count = mysql_num_rows($result);
-    if($count == 0) {
-      $message = "Invalid Username or Password!";
-    } else {
-      $message = "You are successfully authenticated!";
-    }
-  }
-
-*/
-
-?>
 
 
  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
