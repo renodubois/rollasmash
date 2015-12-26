@@ -1,22 +1,36 @@
-<?php 
-ini_set('display_errors', 'On');
+<?php
 
-$servername = "localhost";
-$username = "root";
-$password = "}R,;#,1d";
-$database = "users";
+error_reporting(E_ALL);
+ini_set('display_errors', TRUE);
+ini_set('display_startup_errors', TRUE);
+
+$SQLservername = "localhost";
+$SQLusername = "root";
+$SQLpassword = "}R,;#,1d";
+$SQLdatabase = "users";
 
 if(count($_POST) > 0) {
   
-  $conn = mysqli($servername, $username, $password, $database);
+  $conn = mysqli_connect($SQLservername, $SQLusername, $SQLpassword, $SQLdatabase);
 
   if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
   }
 
-  echo "Connected successfully";
+  $username = $_POST["username"];
+  $password = SHA1($_POST["password"]);
 
-  $result = mysqli_query($conn, "SELECT * FROM details WHERE userName='$_POST["username"]' and password = SHA1('$_POST["password"]')");
+  $username = mysqli_real_escape_string($conn, $username);
+  $password = mysqli_real_escape_string($conn, $password);
+
+  $query = "SELECT * FROM details WHERE userName = '{$username}'";
+
+ # echo $query;
+
+ # echo $username;
+ # echo $password; 
+
+  $result = mysqli_query($conn, $query) or die(mysqli_error($conn));
 
   $count = mysqli_num_rows($result);
 
