@@ -4,26 +4,21 @@ error_reporting(E_ALL);
 ini_set('display_errors', TRUE);
 ini_set('display_startup_errors', TRUE);
 
-$SQLservername = "localhost";
-$SQLusername = "root";
-$SQLpassword = "}R,;#,1d";
-$SQLdatabase = "users";
-
 if(count($_POST) > 0) {
   
-  $conn = mysqli_connect($SQLservername, $SQLusername, $SQLpassword, $SQLdatabase);
+  $conn = mysqli_connect("127.0.0.1", "root", "dankmemes", "test");
 
-  if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-  }
+ // if ($conn->connect_error) {
+ //   die("Connection failed: " . $conn->connect_error);
+ // }
 
   $username = $_POST["username"];
-  $password = SHA1($_POST["password"]);
+  $password = $_POST["password"];
 
   $username = mysqli_real_escape_string($conn, $username);
   $password = mysqli_real_escape_string($conn, $password);
 
-  $query = "SELECT * FROM details WHERE userName = '{$username}'";
+  $query = "SELECT * FROM users WHERE username = '{$username}' AND password = '{$password}'";
 
  # echo $query;
 
@@ -37,7 +32,7 @@ if(count($_POST) > 0) {
   if($count == 0) {
     echo "Invalid Username or Password!";
   } else {
-    echo "Correct username or password!";
+    header('Location: http://renodubois.me');
   }
 
 }
