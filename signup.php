@@ -1,3 +1,55 @@
+<?php
+
+	error_reporting(E_ALL);
+	ini_set('display_errors', TRUE);
+	ini_set('display_startup_errors', TRUE);
+
+	$errUsername = $errPassword = $errEmail = $errPasswordNotMatch = "";
+
+	if(count($_POST) > 0) {
+		// Connect to MySQL database.
+		$conn = mysqli_connect("127.0.0.1", "root", "dankmemes", "test");
+
+		$username = mysqli_real_escape_string($conn, $_POST['username']);
+		$email = mysqli_real_escape_string($conn, $_POST['email']);
+		$password = mysqli_real_escape_string($conn, $_POST['password']);
+		$passwordConfirm = mysqli_real_escape_string($conn, $_POST['password-confirm']);
+
+		$usernameResult = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
+		$emailResult = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email'");
+
+		// Check to see if the username is valid and unique.
+		if (!$username || (strlen($username) < 4 || strlen($username) > 32) || preg_match('/[^a-z_\-0-9]/i', $username)) {
+			$errUsername = "Please enter a valid username";
+		} else if (mysqli_num_rows($usernameResult) != 0) {
+			$errUsername = "That username is already taken!";
+		}
+		// Check email for validity.
+		if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$errEmail = "Please enter a valid email";
+		} else if (mysqli_num_rows($emailResult) != 0) {
+			$errEmail = "That email is in use!";
+		}
+		// Check if Password or PW Confirm is blank, then check to see if they are the same.
+		if (!$password || (strlen($password) < 6 || strlen($password) > 32) || preg_match('/[^a-z0-9]/i', $password)) {
+			$errPassword = "Please enter a valid password";
+		}
+		if (!$passwordConfirm) {
+			$errPasswordNotMatch = "Please re-type your password";
+		}
+		if ($password != $passwordConfirm) {
+			$errPasswordNotMatch = "Passwords do not match";
+		}
+		// Only going into this block if there were no errors.
+		if(!$errUsername && !$errEmail && !$errPassword && !$errPasswordNotMatch) {
+			// Let's encrypt our password using SHA1.
+			$password = SHA1($password);
+			// Insert our data into the Database.
+			mysqli_query($conn, "INSERT INTO users VALUES('$username','$password','$email')");
+		}
+
+	}
+	?>
 
 <!-- Made by Reno DuBois, 2015. Using Bootstrap and Cosmo theme from bootswatch.com. -->
 <!-- Source can be accessed at github.com/renodubois -->
@@ -33,16 +85,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Rolla Smash Bros. Community</a>
+          <a class="navbar-brand" href="index.php">Rolla Smash Bros. Community</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav">
-            <li><a href="index.html">Home</a></li>
             <li><a href="#">Events</a></li>
             <li><a href="#">Rankings</a></li>
-            <li><a href="forum.html">Forums<span class="sr-only">(current)</span></a></li>
+            <li><a href="forum.php">Forums<span class="sr-only">(current)</span></a></li>
           </ul>
           <div class="text-uppercase">
             <ul class="nav navbar-nav navbar-right">
@@ -50,34 +101,46 @@
               <li class="active"><a href="login.php"><span class="glyphicon glyphicon-user"></span> Log In</a></li>
             </ul>
           </div>
-          <form class="navbar-form navbar-right" role="search">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
-            </div>
-            <!-- <button type="submit" class="btn btn-default">Submit</button> -->
           </form>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
 </nav>
 
 
-<div class = "spacer"></div>
+<div class ="spacer-small"></div>
 
 <div class="login-block">
-  <h2 class="login-block">Log in</h2>
+  <h2 class="login-block">Sign Up</h2>
+	<h4>(* represents a required field)</h4>
   </br>
-  <form action = "validate.php"  method = "post">
+	<!-- Username (REQUIRED, UNIQUE) -->
+  <form action = "signup.php"  method = "post">
   <div class="form-group">
+		<label for="username">Username * (4-32 characters)</label>
     <input type="text" class="form-control" name="username" placeholder="Username">
+		<?php echo "<p class='text-danger'>$errUsername</p>";?>
   </div>
+	<!-- Email (REQUIRED) -->
+	<div class="form-group">
+		<label for="email">Email Address *</label>
+    <input type="email" class="form-control" name="email" placeholder="example@domain.com">
+		<?php echo "<p class='text-danger'>$errEmail</p>";?>
+  </div>
+	<!-- Password and Confirm Password (REQUIRED) -->
   <div class="form-group">
+		<label for="password">Password * (6-32 characters)</label>
     <input type="password" class="form-control" name="password" placeholder="Password">
+		<?php echo "<p class='text-danger'>$errPassword</p>";?>
   </div>
-  <div class="checkbox">
-    <label><input type="checkbox">Keep me logged in!</label>
+
+	<div class="form-group">
+		<label for="password-confirm">Confirm Password</label>
+    <input type="password" class="form-control" name="password-confirm" placeholder="Confirm Password">
+		<?php echo "<p class='text-danger'>$errPasswordNotMatch</p>";?>
   </div>
+	<!-- -->
   <div class="form-group">
-    <button type="submit" class="btn btn-default">Log In</button>
+    <button type="submit" class="btn btn-default">Sign Up</button>
   </div>
   </form>
 </div>
